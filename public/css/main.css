@@ -126,16 +126,15 @@ footer{
     height: 100vh;
     justify-content: space-between;
     position: absolute;
-    top: 56px;
+    align-items: center;
+  
 }
 
 
 .login{
     width: 50%;
     display: flex;  
-    justify-content: center;
-
-    
+    justify-content: center;  
 }
 
 .loginpage form{
@@ -157,17 +156,22 @@ footer{
     display: flex;
     flex-direction: column;
     align-items: center;
+
 }
 
 .create input, .login input{
-    height: 54px;
+    outline: none;
+    height: 32px;
     width: 260px;
     border: none;
     border-bottom: solid grey 1px; 
+    font-family: 'Roboto', sans-serif;
 }
 
-.loginpage input[type="text"]{
-    bottom: 0;
+.loginpage input[type="text"], .loginpage input[type="password"]{
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 8px;
 }
 
 .loginpage input[type="submit"]{
@@ -175,6 +179,12 @@ footer{
     background: linear-gradient(to right, #0575e6, #021b79);
     border-radius: 6px;
     color: white;
+}
+
+.fail{
+    position: absolute;
+    bottom: 180px;
+   color: red;
 }
 
 @keyframes fadein {

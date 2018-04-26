@@ -4,8 +4,14 @@
 <h1> Log in </h1>
     <input type="text" name="name" placeholder="Username">
     <input type="password" name="password" placeholder="Password">
+    <input style="opacity: 0; pointer-events: none;" type="password" placeholder="Confirm password">
     <input type="submit" value="Login">
 </form>
+<div class="fail">
+    <%if defined? failure2%>
+    <%= failure2%>
+    <%end%>
+    </div>
 </div>
 <div class="create">
 <form action="/login" method="post">
@@ -15,5 +21,10 @@
     <input type="password" name="confirmed_password" placeholder="Confirm password">
     <input type="submit" value="Create">
     </form>
+    <div class="fail">
+    <%if defined? failure%>
+    <%= failure%>
+    <%end%>
+    </div>
 </div>
 </div>

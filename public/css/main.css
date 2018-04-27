@@ -130,15 +130,19 @@ footer{
   
 }
 
-
 .login{
     width: 50%;
     display: flex;  
     justify-content: center;  
 }
 
-.loginpage form{
-    
+.vl {
+    border-left: 1px solid lightgray; 
+    height: 375px;
+    position: absolute;
+    top:25%;
+    left: 50%;
+    margin-left: -3px;
 }
 
 .login form, .create form{

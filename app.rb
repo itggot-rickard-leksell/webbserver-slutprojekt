@@ -6,8 +6,15 @@ enable:sessions
 class App < Sinatra::Base
 
 	get '/' do
-	 erb(:index)
-	 
+
+		if session[:user_id]
+			current_id = session[:user_id]
+			db = SQLite3::Database::new("./database/webbshop.db")
+			name = db.execute("SELECT name FROM users WHERE id IS ?", [current_id])
+			erb(:index, locals:{name: name})
+		else
+			erb(:index)
+		end 
 	end
 
 	get '/login' do

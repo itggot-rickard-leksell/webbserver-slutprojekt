@@ -1,6 +1,7 @@
 <%if defined? name%>
         <a id="log" href="/profile">
             <%=name[0][0]%>
+        <form action ="/" method="post"><input id="logout" type="submit" value="Log out"> </form>
         </a>
     <%else%>
         <a id="log" href="/login">Log in</a>
@@ -18,7 +19,13 @@
     <%total = 0%>
     <%cart.each do |product|%>
     <tr>
-    <td><%=product[2]%></td>
+    <%items.each do |item|%>
+    <%if product[2] == item[0]%>
+    <td>
+    <%=item[1]%>
+    </td>
+    <%end%>
+    <%end%>
     <td><%=product[3]%> </td>
     <td><%=product[4]%> $ </td>
     <td><form action="/profile" method="POST"><input type="hidden" name="id" value="<%=product[0]%>"><input type="submit" value="x"></form></td>
@@ -45,7 +52,13 @@ Total Price: <%=total%> $
        </tr>
     <%history.each do |product|%>
     <tr>
-    <td><%=product[2]%></td>
+    <%items.each do |item|%>
+    <%if product[2] == item[0]%>
+    <td>
+    <%=item[1]%>
+    </td>
+    <%end%>
+    <%end%>
     <td><%=product[3]%> </td>
     </tr>
     <%end%>

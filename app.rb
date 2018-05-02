@@ -10,6 +10,11 @@ class App < Sinatra::Base
 		erb(:index)
 	end
 
+	post '/' do
+		session[:user_id] = nil
+		redirect('/')
+	end
+
 	get '/shop' do
 		db = SQLite3::Database::new("./database/webbshop.db")
 		products = db.execute("SELECT * FROM items")
@@ -70,11 +75,12 @@ class App < Sinatra::Base
 	post '/purchase/:product' do
 		db = SQLite3::Database::new("./database/webbshop.db")
 		product_name = params[:product]
+		product_id = db.execute("SELECT id FROM items where name IS?", [product_name])[0][0]
 		quantity = params[:quantity]
 		price = db.execute("SELECT price FROM items where name IS ?", [product_name])[0][0]
 		total = quantity.to_f * price.to_f
 		user_id = session[:user_id]
-		db.execute("insert into orderlist (user_id, item_name, item_quantity, total_price, status) VALUES (?,?,?,?,?)", [user_id, product_name, quantity, total, "pending"])
+		db.execute("insert into orderlist (user_id, item_id, item_quantity, total_price, status) VALUES (?,?,?,?,?)", [user_id, product_id, quantity, total, "pending"])
 		redirect('/shop')
 	end
 
@@ -85,9 +91,10 @@ class App < Sinatra::Base
 			result = Auth::user(current_id)
 			result2 = Auth::cartcount(current_id)
 			db = SQLite3::Database::new("./database/webbshop.db")
+			items = db.execute("SELECT * FROM items")
 			cart = db.execute("SELECT * FROM orderlist WHERE user_id IS ? AND status IS ?", [current_id, "pending"])
 			history = db.execute("SELECT * FROM orderlist WHERE user_id IS ? AND status IS ?", [current_id, "finished"])
-			erb(:profile, locals: {db: db, name: result, cartcount: result2, cart: cart, history: history})
+			erb(:profile, locals: {items: items, name: result, cartcount: result2, cart: cart, history: history})
 		else
 			redirect("/login")
 		end

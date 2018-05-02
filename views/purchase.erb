@@ -36,6 +36,8 @@
 <%if defined? name%>
         <a id="log" href="/profile">
             <%=name[0][0]%>
+            <form action ="/" method="post"><input id="logout" type="submit" value="Log out"> </form>
+        </a>
         </a>
     <%else%>
         <a id="log" href="/login">Log in</a>

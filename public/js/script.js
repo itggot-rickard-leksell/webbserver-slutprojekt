@@ -19,8 +19,6 @@ function filter() {
             x[i].style.display = "none";
         }
     }
-
-
     }
-    
    }
+

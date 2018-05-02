@@ -1,0 +1,42 @@
+<div class="purchase">
+<div class="preview">
+    <img src="<%=product[0][3]%>" style="width: 50%;">
+</div>
+<div class="actions">
+<h1><%=product[0][1]%></h1>
+<sub class="type"><%=product[0][4]%> - <%=product[0][2]%>$</sub>
+<form action="/purchase/<%=product[0][1]%>" method="POST">
+<select name="size" required>
+<option value=""disabled selected>Choose Size</option>
+<%if product[0][4].include? "Sneakers"%>
+<option value="36">36</option>
+<option value="37">37</option>
+<option value="38">38</option>
+<option value="39">39</option>
+<option value="40">40</option>
+<option value="41">41</option>
+<option value="42">42</option>
+<option value="43">43</option>
+<%elsif product[0][4].include? "Tshirts"%>
+<option value="xs">XS</option>
+<option value="s">S</option>
+<option value="m">M</option>
+<option value="l">L</option>
+<option value="xl">XL</option>
+<%elsif product[0][4].include? "Backpacks"%>
+<option value="one-size">One Size</option>
+<%end%>
+</select>
+<input type="number" name="quantity" min = "1" placeholder="Quantity">
+<input type="submit" value="Add to cart">
+</form>
+</div>
+</div>
+
+<%if defined? name%>
+        <a id="log" href="/profile">
+            <%=name[0][0]%>
+        </a>
+    <%else%>
+        <a id="log" href="/login">Log in</a>
+    <%end%>

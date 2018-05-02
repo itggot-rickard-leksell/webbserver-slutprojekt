@@ -1,0 +1,82 @@
+<%if defined? name%>
+        <a id="log" href="/profile">
+            <%=name[0][0]%>
+        </a>
+    <%else%>
+        <a id="log" href="/login">Log in</a>
+    <%end%>
+<div id="shop">
+<div class="filters">
+<h1> Filter </h1>
+<select id="filter" onchange="filter()">
+<option>All </option>
+<option>Sneakers</option>
+<option>Tshirt</option>
+<option>Backpack</option>
+</select>
+</div>
+<div class="items">
+<input type="text" id="input" onkeyup="search()" placeholder="Search for products..">
+<table id = "table">
+    <%i = 0;%>
+    <%products.each do |product|%>
+    <%if (i % 4 == 0 && i != 0)%>
+    <tr>
+        <td onclick="loggedin('<%=product[1]%>')">
+            <img src="<%=product[3]%>" style="width: 280px; height: 220px;">
+            <div class="tag">
+            <h1><%=product[1,2].join(" - ") + "$"%></h1>
+            </div>
+        </td> 
+    <%else%>
+        <td onclick="loggedin('<%=product[1]%>')">
+        <img src="<%=product[3]%>" style="width: 280px; height: 220px;">
+        <div class="tag">
+        <h1><%=product[1,2].join(" - ") + "$"%></h1>
+        </div>
+        </td>
+    <%end%>
+    <%i += 1%>
+    <%end%>
+    </tr>
+    </table>
+    </div>
+</div>
+</div>
+<script src="./js/script.js"></script>
+<script type="text/javascript"> 
+function search() {
+    input = document.getElementById("input");
+    filter = input.value.toUpperCase();
+    var table = document.getElementById('table'),
+    rows = table.rows, rowcount = rows.length, r,
+    cells, cellcount, c, cell;
+for( r=0; r<rowcount; r++) {
+    cells = rows[r].cells;
+    cellcount = cells.length;
+    for( c=0; c<cellcount; c++) {
+        cell = cells[c];
+         if (!hasNumbers(filter) && cell.innerHTML.toUpperCase().indexOf(filter) > -1) {
+          cell.style.display = "";
+        } else {
+          cell.style.display = "none";
+        }
+    }
+} 
+       
+      } 
+
+  function hasNumbers(t)
+{
+return /\d/.test(t);
+}
+
+function loggedin(product){
+    <%if defined? name%>
+        window.location= "/purchase/" + product
+    <%else%>
+        window.location="/login"
+    <%end%>
+}
+
+</script>

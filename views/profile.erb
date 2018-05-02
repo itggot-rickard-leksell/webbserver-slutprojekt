@@ -1,0 +1,56 @@
+<%if defined? name%>
+        <a id="log" href="/profile">
+            <%=name[0][0]%>
+        </a>
+    <%else%>
+        <a id="log" href="/login">Log in</a>
+    <%end%>
+<div class="profile">
+<div class="cart">
+<h1> Your cart </h1>
+<table>
+<tr>
+     <th> Product </th>
+      <th>Quantity</th>
+       <th>Price</th>
+       <th>Remove </th>
+       </tr>
+    <%total = 0%>
+    <%cart.each do |product|%>
+    <tr>
+    <td><%=product[2]%></td>
+    <td><%=product[3]%> </td>
+    <td><%=product[4]%> $ </td>
+    <td><form action="/profile" method="POST"><input type="hidden" name="id" value="<%=product[0]%>"><input type="submit" value="x"></form></td>
+    </tr>
+    <%total += product[4]%>
+    <%end%>
+</table>
+<div class="finish">
+Total Price: <%=total%> $
+<%if cartcount == 0%>
+<form action="/checkout" method ="POST"><input type="hidden" name="user" value="<%=name%>"><input type="submit" value="Checkout"> </form>
+<%else%>
+<form action="/shop" method ="GET"><input type="submit" value="No Products"> </form>
+<%end%>
+</div> 
+</div>
+
+<div class="history">
+<h1> Previous Purchases </h1>
+<table>
+<tr>
+     <th> Product </th>
+      <th>Quantity</th>
+       </tr>
+    <%history.each do |product|%>
+    <tr>
+    <td><%=product[2]%></td>
+    <td><%=product[3]%> </td>
+    </tr>
+    <%end%>
+</table>
+</div>
+</div>
+<script src="./js/script.js"></script>
+ 

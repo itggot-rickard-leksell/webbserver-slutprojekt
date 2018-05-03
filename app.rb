@@ -16,7 +16,7 @@ class App < Sinatra::Base
 	end
 
 	get '/shop' do
-		db = SQLite3::Database::new("./database/webbshop.db")
+		db = Auth::getDb()
 		products = db.execute("SELECT * FROM items")
 		if session[:user_id]
 			current_id = session[:user_id]
@@ -33,35 +33,39 @@ class App < Sinatra::Base
 
 	post '/login' do
 		result = 0
-		new_name = params[:name]
-		new_password = params[:password]
-		if params[:confirmed_password] != nil
-			confirmed_password = params[:confirmed_password]
-			result = Auth::create(new_name, new_password, confirmed_password)
-			if result == 0
-				db = SQLite3::Database::new("./database/webbshop.db")
-				session[:user_id] = db.execute("SELECT id FROM users WHERE name=?", [new_name])[0][0]
-				redirect('/shop')
-			elsif result == 1
-				erb(:login, locals:{failure: "Username is already taken."})
-			elsif result == 2
-				erb(:login, locals:{failure: "Passwords didn't match. Please try again."})
+		new_name = Auth::checkchar(Auth::escape(params[:name]))
+		if new_name != false
+			new_password = params[:password]
+			if params[:confirmed_password] != nil
+				confirmed_password = params[:confirmed_password]
+				result = Auth::create(new_name, new_password, confirmed_password)
+				if result == 0
+					db = Auth::getDb()
+					session[:user_id] = Auth::getUser(new_name)
+					redirect('/shop')
+				elsif result == 1
+					erb(:login, locals:{failure: "Username is already taken."})
+				elsif result == 2
+					erb(:login, locals:{failure: "Passwords didn't match. Please try again."})
+				end
+			else
+				result = Auth::login(new_name, new_password)
+				if result == 0
+					db = Auth::getDb()
+					session[:user_id] = Auth::getUser(new_name)
+					redirect('/shop')
+				elsif result == 1
+					erb(:login, locals:{failure2: "Wrong password. Please try again."})
+				end
 			end
 		else
-			result = Auth::login(new_name, new_password)
-			if result == 0
-				db = SQLite3::Database::new("./database/webbshop.db")
-				session[:user_id] = db.execute("SELECT id FROM users WHERE name=?", [new_name])[0][0]
-				redirect('/shop')
-			elsif result == 1
-				erb(:login, locals:{failure2: "Wrong password. Please try again."})
-			end
+			redirect("/error")
 		end
 	end
 
 	get '/purchase/:product' do
-		product_name = params[:product]
-		db = SQLite3::Database::new("./database/webbshop.db")
+		product_name = Auth::escape(params[:product])
+		db = Auth::getDb()
 		product = db.execute("SELECT * FROM items where name IS ?", [product_name])
 		if session[:user_id]
 			current_id = session[:user_id]
@@ -73,24 +77,28 @@ class App < Sinatra::Base
 	end
 	
 	post '/purchase/:product' do
-		db = SQLite3::Database::new("./database/webbshop.db")
-		product_name = params[:product]
+		db = Auth::getDb()
+		product_name = Auth::escape(params[:product])
 		product_id = db.execute("SELECT id FROM items where name IS?", [product_name])[0][0]
-		quantity = params[:quantity]
+		quantity = Auth::checkInt(params[:quantity])
+		if (quantity != false)
 		price = db.execute("SELECT price FROM items where name IS ?", [product_name])[0][0]
 		total = quantity.to_f * price.to_f
 		user_id = session[:user_id]
 		db.execute("insert into orderlist (user_id, item_id, item_quantity, total_price, status) VALUES (?,?,?,?,?)", [user_id, product_id, quantity, total, "pending"])
-		redirect('/shop')
+		redirect("/shop")
+		else
+		redirect(:error)
+		end
 	end
-
+	
 	get '/profile' do
 
 		if session[:user_id]
 			current_id = session[:user_id]
 			result = Auth::user(current_id)
 			result2 = Auth::cartcount(current_id)
-			db = SQLite3::Database::new("./database/webbshop.db")
+			db = Auth::getDb()
 			items = db.execute("SELECT * FROM items")
 			cart = db.execute("SELECT * FROM orderlist WHERE user_id IS ? AND status IS ?", [current_id, "pending"])
 			history = db.execute("SELECT * FROM orderlist WHERE user_id IS ? AND status IS ?", [current_id, "finished"])
@@ -103,7 +111,7 @@ class App < Sinatra::Base
 	post '/profile' do
 		order_id = params[:id]
 		p order_id
-		db = SQLite3::Database::new("./database/webbshop.db")
+		db = Auth::getDb()
 		db.execute("DELETE FROM orderlist WHERE order_id IS ?", [order_id])
 		redirect("/profile")
 	end
@@ -114,8 +122,12 @@ class App < Sinatra::Base
 
 	post '/checkout' do
 		current_id = session[:user_id]
-		db = SQLite3::Database::new("./database/webbshop.db")
+		db = Auth::getDb()
 		db.execute("UPDATE orderlist SET status = ? WHERE user_id = ?", ["finished", current_id])
 		redirect ("/checkout")
+	end
+
+	get '/error' do
+	erb(:error)
 	end
 end           

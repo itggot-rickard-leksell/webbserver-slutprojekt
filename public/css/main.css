@@ -528,3 +528,11 @@ input[type=number]::-webkit-outer-spin-button {
     justify-content: center;
     align-items: center;
 }
+
+/* Error page */
+
+.error{
+    position: absolute;
+    top: 56px;
+    margin: 16px;
+}

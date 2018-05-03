@@ -17,7 +17,7 @@
 <div class="create">
 <form action="/login" method="post">
 <h1> Create an account </h1>
-    <input type="text" name="name" placeholder="Username">
+    <input type="text" name="name" onkeypress="test()" id="usern" placeholder="Username">
     <input type="password" name="password" placeholder="Password">
     <input type="password" name="confirmed_password" placeholder="Confirm password">
     <input type="submit" value="Create">
@@ -29,3 +29,4 @@
     </div>
 </div>
 </div>
+<script src="./js/script.js"></script>
